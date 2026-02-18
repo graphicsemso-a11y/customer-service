@@ -11,7 +11,7 @@ const App: React.FC = () => {
     return saved ? JSON.parse(saved) : [];
   });
   
-  const [activeTab, setActiveTab] = useState<'entries' | 'dashboard' | 'reports'>('entries');
+  const [activeTab, setActiveTab] = useState<'entries' | 'reports'>('entries');
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const App: React.FC = () => {
   };
 
   const removeInquiry = (id: string) => {
-    if (confirm('Are you sure you want to delete this entry?')) {
+    if (confirm('Are you sure you want to delete this permanent record?')) {
       setInquiries(prev => prev.filter(iq => iq.id !== id));
     }
   };
@@ -37,133 +37,181 @@ const App: React.FC = () => {
     );
   }, [inquiries, searchTerm]);
 
+  const logoUrl = 'https://upload.wikimedia.org/wikipedia/en/3/30/Automobile_%26_Touring_Club_of_the_UAE_logo.png';
+
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-600 p-2 rounded-lg">
-              <i className="fas fa-headset text-white text-xl"></i>
+    <div className="min-h-screen flex flex-col relative overflow-x-hidden bg-slate-50 selection:bg-blue-600 selection:text-white">
+      {/* Background Watermark Layer */}
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.04] flex items-center justify-center p-20 select-none">
+        <div 
+          className="w-full h-full max-w-5xl"
+          style={{
+            backgroundImage: `url(${logoUrl})`,
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'contain',
+            filter: 'grayscale(1) brightness(0.8)'
+          }}
+        />
+      </div>
+
+      {/* Corporate Navigation Bar */}
+      <header className="bg-white/90 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          <div className="flex items-center gap-4 group cursor-pointer">
+            <div className="relative">
+              <img src={logoUrl} alt="ATCUAE Logo" className="h-12 w-auto drop-shadow-sm transition-transform group-hover:scale-105" />
             </div>
-            <h1 className="text-xl font-bold text-gray-900 tracking-tight">Service<span className="text-blue-600">Insight</span></h1>
+            <div className="h-10 w-px bg-slate-200 mx-2 hidden md:block"></div>
+            <div className="hidden sm:block">
+              <h1 className="text-xl font-black text-slate-900 leading-none tracking-tighter">ATCUAE</h1>
+              <p className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em] mt-1.5">Intelligence Hub</p>
+            </div>
           </div>
-          <div className="hidden md:flex items-center space-x-1">
+          
+          <div className="flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl">
             <button 
               onClick={() => setActiveTab('entries')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'entries' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+              className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2.5 ${
+                activeTab === 'entries' 
+                ? 'bg-white text-slate-900 shadow-xl ring-1 ring-slate-200/50' 
+                : 'text-slate-400 hover:text-slate-600'
+              }`}
             >
-              <i className="fas fa-list-ul mr-2"></i> Entries
-            </button>
-            <button 
-              onClick={() => setActiveTab('dashboard')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'dashboard' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
-            >
-              <i className="fas fa-chart-line mr-2"></i> Dashboard
+              <i className="fas fa-database text-[10px]"></i> Operational Logs
             </button>
             <button 
               onClick={() => setActiveTab('reports')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${activeTab === 'reports' ? 'bg-blue-50 text-blue-600' : 'text-gray-600 hover:bg-gray-100'}`}
+              className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2.5 ${
+                activeTab === 'reports' 
+                ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/20' 
+                : 'text-slate-400 hover:text-slate-600'
+              }`}
             >
-              <i className="fas fa-file-alt mr-2"></i> Reports
+              <i className="fas fa-chart-line text-[10px]"></i> Visual Reports
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        {/* Mobile Navigation Tabs */}
-        <div className="md:hidden flex space-x-2 mb-6">
-           <button onClick={() => setActiveTab('entries')} className={`flex-1 py-2 text-center rounded-lg text-xs font-bold uppercase ${activeTab === 'entries' ? 'bg-blue-600 text-white' : 'bg-white text-gray-500 border border-gray-200'}`}>Entries</button>
-           <button onClick={() => setActiveTab('dashboard')} className={`flex-1 py-2 text-center rounded-lg text-xs font-bold uppercase ${activeTab === 'dashboard' ? 'bg-blue-600 text-white' : 'bg-white text-gray-500 border border-gray-200'}`}>Stats</button>
-           <button onClick={() => setActiveTab('reports')} className={`flex-1 py-2 text-center rounded-lg text-xs font-bold uppercase ${activeTab === 'reports' ? 'bg-blue-600 text-white' : 'bg-white text-gray-500 border border-gray-200'}`}>Reports</button>
-        </div>
-
+      {/* Primary Workspace */}
+      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full z-10 relative">
         {activeTab === 'entries' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Form Column */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-24">
-                <InquiryForm onAdd={addInquiry} />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            {/* Input Form Column */}
+            <div className="lg:col-span-4 sticky top-32">
+              <InquiryForm onAdd={addInquiry} />
+              
+              <div className="mt-8 p-6 bg-blue-600 rounded-[2rem] text-white shadow-xl shadow-blue-600/20 relative overflow-hidden group">
+                 <i className="fas fa-circle-info absolute -right-4 -bottom-4 text-8xl opacity-10 group-hover:scale-110 transition-transform"></i>
+                 <h4 className="font-black text-sm uppercase tracking-widest mb-2">Live Stream Stats</h4>
+                 <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-black tracking-tighter">{inquiries.length}</span>
+                    <span className="text-blue-100 text-xs font-bold">Total Processed</span>
+                 </div>
               </div>
             </div>
 
-            {/* List Column */}
-            <div className="lg:col-span-2 space-y-6">
-              <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+            {/* Records List Column */}
+            <div className="lg:col-span-8 space-y-6">
+              <div className="bg-slate-900 p-5 rounded-3xl shadow-2xl border border-slate-800 flex items-center gap-4">
                 <div className="relative flex-grow">
-                  <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                  <i className="fas fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-500"></i>
                   <input
                     type="text"
-                    placeholder="Search by name, phone, or category..."
-                    className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    placeholder="Search by Name, Contact, or Stream..."
+                    className="w-full pl-12 pr-5 py-4 bg-slate-800/50 border border-slate-700 rounded-2xl focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all font-bold text-sm text-white placeholder:text-slate-500 shadow-inner"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
-                <div className="text-sm font-medium text-gray-500 whitespace-nowrap">
-                  Total: {inquiries.length}
-                </div>
               </div>
 
               {filteredInquiries.length > 0 ? (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-5">
                   {filteredInquiries.map((iq) => (
-                    <div key={iq.id} className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 group hover:border-blue-200 transition-all flex flex-col md:flex-row md:items-start justify-between gap-4">
-                      <div className="flex-grow">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider
-                            ${iq.category === InquiryCategory.CPD ? 'bg-blue-100 text-blue-700' : ''}
-                            ${iq.category === InquiryCategory.IDP ? 'bg-green-100 text-green-700' : ''}
-                            ${iq.category === InquiryCategory.MOTORSPORT ? 'bg-red-100 text-red-700' : ''}
-                            ${iq.category === InquiryCategory.TIR ? 'bg-orange-100 text-orange-700' : ''}
-                            ${iq.category === InquiryCategory.GENERAL ? 'bg-gray-100 text-gray-700' : ''}
+                    <div key={iq.id} className="bg-white/70 backdrop-blur-md p-8 rounded-[2.5rem] shadow-sm border border-white group hover:border-blue-400 hover:shadow-xl hover:shadow-blue-600/5 transition-all flex flex-col md:flex-row md:items-start justify-between gap-6 relative overflow-hidden">
+                      <div className={`absolute left-0 top-0 bottom-0 w-2.5 transition-all group-hover:w-4
+                        ${iq.category === InquiryCategory.CPD ? 'bg-blue-600' : ''}
+                        ${iq.category === InquiryCategory.IDP ? 'bg-emerald-500' : ''}
+                        ${iq.category === InquiryCategory.MOTORSPORT ? 'bg-rose-500' : ''}
+                        ${iq.category === InquiryCategory.TIR ? 'bg-amber-500' : ''}
+                        ${iq.category === InquiryCategory.GENERAL ? 'bg-slate-400' : ''}
+                      `}></div>
+                      
+                      <div className="flex-grow pl-4">
+                        <div className="flex flex-wrap items-center gap-3 mb-5">
+                          <span className={`text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-sm
+                            ${iq.category === InquiryCategory.CPD ? 'bg-blue-600 text-white' : ''}
+                            ${iq.category === InquiryCategory.IDP ? 'bg-emerald-500 text-white' : ''}
+                            ${iq.category === InquiryCategory.MOTORSPORT ? 'bg-rose-500 text-white' : ''}
+                            ${iq.category === InquiryCategory.TIR ? 'bg-amber-500 text-white' : ''}
+                            ${iq.category === InquiryCategory.GENERAL ? 'bg-slate-600 text-white' : ''}
                           `}>
                             {iq.category}
                           </span>
-                          <span className="text-xs text-gray-400 font-medium">{iq.date}</span>
+                          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200/50">
+                            <i className="far fa-calendar-alt mr-2 text-blue-500"></i> {iq.date}
+                          </span>
                         </div>
-                        <h4 className="font-bold text-gray-900 mb-0.5">{iq.name} <span className="text-sm font-normal text-gray-500 ml-1">(Qty: {iq.count})</span></h4>
-                        <div className="text-sm text-blue-600 mb-2 flex items-center gap-1.5">
-                          <i className="fas fa-phone-alt text-xs"></i>
-                          {iq.phoneNumber}
+                        <div className="flex flex-col md:flex-row md:items-center gap-3 mb-4">
+                          <h4 className="font-black text-slate-900 text-2xl tracking-tighter">{iq.name}</h4>
+                          <span className="text-xs font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-lg border border-blue-100 uppercase flex items-center gap-2">
+                             <i className="fas fa-phone-volume text-[10px]"></i> {iq.phoneNumber}
+                          </span>
                         </div>
-                        <p className="text-sm text-gray-600 leading-relaxed">{iq.inquiryDetails}</p>
+                        <p className="text-slate-600 leading-relaxed font-medium text-base bg-slate-50/50 p-5 rounded-2xl border border-slate-100/50">
+                          {iq.inquiryDetails}
+                        </p>
                       </div>
-                      <div className="flex items-center gap-2 self-end md:self-start opacity-0 group-hover:opacity-100 transition-opacity">
+                      
+                      <div className="flex items-center gap-2 self-end md:self-start opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
                         <button 
                           onClick={() => removeInquiry(iq.id)}
-                          className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                          title="Delete"
+                          className="w-12 h-12 flex items-center justify-center text-slate-300 hover:text-rose-600 hover:bg-rose-50 rounded-2xl transition-all border border-transparent hover:border-rose-100 shadow-sm"
+                          title="Erase Record"
                         >
-                          <i className="fas fa-trash-alt"></i>
+                          <i className="fas fa-trash-can"></i>
                         </button>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-24 bg-white rounded-xl border-2 border-dashed border-gray-200">
-                  <i className="fas fa-folder-open text-5xl text-gray-200 mb-4"></i>
-                  <p className="text-gray-400 font-medium">No inquiries found</p>
+                <div className="flex flex-col items-center justify-center py-40 bg-white/40 backdrop-blur-md rounded-[3rem] border-4 border-dashed border-white/60">
+                  <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-8 shadow-2xl shadow-blue-500/10 scale-110">
+                    <i className="fas fa-cloud-sun text-4xl text-blue-200"></i>
+                  </div>
+                  <h3 className="text-2xl font-black text-slate-400 tracking-tight">No Results Found</h3>
+                  <p className="text-slate-400 text-sm mt-2 font-medium px-10 text-center">We couldn't find any inquiries matching your current filters.</p>
                 </div>
               )}
             </div>
           </div>
         )}
 
-        {activeTab === 'dashboard' && <Dashboard inquiries={inquiries} />}
-        {activeTab === 'reports' && <ReportGenerator inquiries={inquiries} />}
+        {activeTab === 'reports' && (
+          <ReportGenerator inquiries={inquiries} />
+        )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-6">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">© 2024 ServiceInsight Hub. Built for Excellence.</p>
-          <div className="flex gap-6">
-            <a href="#" className="text-gray-400 hover:text-blue-600 text-lg"><i className="fab fa-github"></i></a>
-            <a href="#" className="text-gray-400 hover:text-blue-600 text-lg"><i className="fab fa-linkedin"></i></a>
+      {/* Institutional Footer */}
+      <footer className="bg-white/90 backdrop-blur-xl border-t border-slate-200 py-16 z-40 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
+          <div className="flex items-center gap-6">
+             <img src={logoUrl} alt="Logo" className="h-16 w-auto grayscale opacity-40 hover:grayscale-0 transition-all cursor-crosshair" />
+             <div className="flex flex-col">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Official Enterprise Resource</p>
+                <p className="text-sm font-bold text-slate-600 mt-1">Automobile & Touring Club UAE</p>
+             </div>
+          </div>
+          <div className="flex flex-wrap justify-center gap-4">
+             <span className="text-[9px] font-black text-blue-600 uppercase tracking-widest px-5 py-3 bg-blue-50 border border-blue-100 rounded-2xl shadow-sm">Advanced Security Engine</span>
+             <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest px-5 py-3 bg-emerald-50 border border-emerald-100 rounded-2xl shadow-sm">AI Analytics Verified</span>
+          </div>
+          <div className="text-right hidden md:block">
+             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Support Line</p>
+             <p className="text-lg font-black text-slate-900 mt-1">+971 800 ATCUAE</p>
           </div>
         </div>
       </footer>
